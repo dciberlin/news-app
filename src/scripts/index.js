@@ -1,13 +1,22 @@
-// The following line makes sure your styles are included in the project. Don't remove this.
 import '../styles/main.scss';
-// Import any additional modules you want to include below \/
+import { fetchNews } from './fetchNews';
+import { appendArticle } from './appendArticle';
 
-// \/ All of your javascript should go here \/
-
+/** Listening on the keyup event */
+let timeout = null;
 const searchInput = document.querySelector('#news-search');
-
 searchInput.onkeyup = getValue;
-
 function getValue(e) {
-  console.log(e.srcElement.value);
+  clearTimeout(timeout);
+  timeout = setTimeout(function() {
+    const value = e.srcElement.value;
+    renderNews(value);
+  }, 500);
+}
+
+async function renderNews(value) {
+  const articles = await fetchNews(value);
+  articles.map(el => {
+    appendArticle(el);
+  });
 }
